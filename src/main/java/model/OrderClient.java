@@ -5,7 +5,7 @@ import static io.restassured.RestAssured.given;
 public class OrderClient extends Client {
     private static final String CREATE = "api/orders";
     private static final String GET_ORDERS = "api/orders";
-    public ValidatableResponse create(Order order, Object accessToken) {
+    public ValidatableResponse create(Order order, String accessToken) {
         return given()
                 .spec(getSpec().log().all())
                 .header("Authorization", accessToken)
@@ -14,7 +14,7 @@ public class OrderClient extends Client {
                 .post(CREATE)
                 .then().log().all();
     }
-    public ValidatableResponse getOrders(Object accessToken) {
+    public ValidatableResponse getOrders(String accessToken) {
         return given()
                 .spec(getSpec().log().all())
                 .header("Authorization", accessToken)

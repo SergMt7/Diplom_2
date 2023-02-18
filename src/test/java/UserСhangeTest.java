@@ -10,6 +10,8 @@ public class UserСhangeTest {
     private User user;
     private UserClient userClient;
     private String accessToken;
+    private String changeName = "New_NAME";
+    private String changeEmail = "new_email@yandex.ru";
 
     @Before
     public void setUp() {
@@ -22,10 +24,10 @@ public class UserСhangeTest {
     public void changeNameAuthorizedUserTest() {
         ValidatableResponse response = userClient.create(user);
         accessToken = response.extract().path("accessToken").toString();
-        user.setName("New_NAME");
+        user.setName(changeName);
         ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessToken);
         changeResponse.assertThat()
-                .body("user.name", equalTo("New_NAME"))
+                .body("user.name", equalTo(changeName))
                 .and().statusCode(200);
     }
 
@@ -34,10 +36,10 @@ public class UserСhangeTest {
     public void changeLoginAuthorizedUserTest() {
         ValidatableResponse response = userClient.create(user);
         accessToken = response.extract().path("accessToken").toString();
-        user.setEmail("new_email@yandex.ru");
+        user.setEmail(changeEmail);
         ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessToken);
         changeResponse.assertThat()
-                .body("user.email",equalTo("new_email@yandex.ru"))
+                .body("user.email",equalTo(changeEmail))
                 .and().statusCode(200);
     }
 
@@ -45,9 +47,11 @@ public class UserСhangeTest {
     @DisplayName("Изменение name неавторизованного пользовалеля")
     public void changeNameUnauthorizedUserTest() {
         ValidatableResponse response = userClient.create(user);
-        user.setName("New_NAME");
-        accessToken = "";
-        ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessToken);
+        accessToken = response.extract().path("accessToken").toString();
+        String accessTokenNull = accessToken;
+        user.setName(changeName);
+        accessTokenNull = "";
+        ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessTokenNull);
         changeResponse.assertThat()
                 .body("message", equalTo("You should be authorised"))
                 .and().statusCode(401);
@@ -57,9 +61,11 @@ public class UserСhangeTest {
     @DisplayName("Изменение email неавторизованного пользовалеля")
     public void changeEmailUnauthorizedUserTest() {
         ValidatableResponse response = userClient.create(user);
-        user.setName("new_email@yandex.ru");
-        accessToken = "";
-        ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessToken);
+        accessToken = response.extract().path("accessToken").toString();
+        String accessTokenNull = accessToken;
+        user.setName(changeEmail);
+        accessTokenNull = "";
+        ValidatableResponse changeResponse = userClient.change(UserChange.from(user), accessTokenNull);
         changeResponse.assertThat()
                 .body("message", equalTo("You should be authorised"))
                 .and().statusCode(401);

@@ -33,9 +33,11 @@ public class UserCreateTest {
     @Test
     @DisplayName("Попытка создания зарегистрированного пользователя")
     public void createExistUser() {
-        userClient.create(user);
         ValidatableResponse response = userClient.create(user);
-        response.assertThat().body("message", equalTo("User already exists"))
+        accessToken = response.extract().path("accessToken").toString();
+        userClient.create(user);
+        ValidatableResponse response2 = userClient.create(user);
+        response2.assertThat().body("message", equalTo("User already exists"))
                 .and().statusCode(403);
     }
 
@@ -44,6 +46,9 @@ public class UserCreateTest {
     public void createUserWithoutPassword() {
         user.setPassword("");
         ValidatableResponse response = userClient.create(user);
+        if (accessToken != null) {
+            accessToken = response.extract().path("accessToken").toString();
+        }
         response.assertThat().body("message", equalTo("Email, password and name are required fields"))
                 .and().statusCode(403);
     }

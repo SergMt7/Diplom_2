@@ -26,7 +26,7 @@ public class UserClient extends Client {
                 .then().log().all();
     }
 
-    public ValidatableResponse login(Login login, Object accessToken) {
+    public ValidatableResponse login(Login login, String accessToken) {
         return given()
                 .spec(getSpec().log().all())
                 .header("Authorization", accessToken)
@@ -35,7 +35,7 @@ public class UserClient extends Client {
                 .post(LOGIN)
                 .then().log().all();
     }
-    public ValidatableResponse change(UserChange userChange, Object accessToken) {
+    public ValidatableResponse change(UserChange userChange, String accessToken) {
         return given()
                 .spec(getSpec().log().all())
                 .header("Authorization", accessToken)

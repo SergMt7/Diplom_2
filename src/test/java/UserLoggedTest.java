@@ -11,6 +11,8 @@ public class UserLoggedTest {
     private User user;
     private UserClient userClient;
     private String accessToken;
+    private String invalidLogin = "12345@yandex.ru";
+    private String invalidPassword = "QWERTY";
 
     @Before
     public void setUp() {
@@ -34,7 +36,7 @@ public class UserLoggedTest {
     public void loginUserInvalidLoginTest() {
         ValidatableResponse response = userClient.create(user);
         accessToken = response.extract().path("accessToken").toString();
-        user.setEmail("12345@yandex.ru");
+        user.setEmail(invalidLogin);
         ValidatableResponse loginResponse = userClient.login(Login.from(user), accessToken);
         loginResponse.assertThat()
                 .body("message", equalTo("email or password are incorrect"))
@@ -46,7 +48,7 @@ public class UserLoggedTest {
     public void loginUserInvalidPasswordTest() {
         ValidatableResponse response = userClient.create(user);
         accessToken = response.extract().path("accessToken").toString();
-        user.setPassword("QWERTY");
+        user.setPassword(invalidPassword);
         ValidatableResponse loginResponse = userClient.login(Login.from(user), accessToken);
         loginResponse.assertThat()
                 .body("message", equalTo("email or password are incorrect"))

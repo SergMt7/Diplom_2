@@ -17,6 +17,7 @@ public class OrderCreateTest {
     private String[] ingredients;
     private User user;
     private UserClient userClient;
+    private String invalidIngredient = "qwerty123";
 
     public OrderCreateTest(String[] ingredients) {
         this.ingredients = ingredients;
@@ -63,7 +64,7 @@ public class OrderCreateTest {
     @DisplayName("Создание заказа с невалидным ингредиентом без авторизации")
     public void orderCreateTestWithoutAuthorizedInvalid() {
         Order order = new Order();
-        order.setIngredients(new String[]{"qwerty123"});
+        order.setIngredients(new String[]{invalidIngredient});
         accessToken = "";
         ValidatableResponse responseOrder = orderClient.create(order, accessToken);
         responseOrder.assertThat().log().all()
@@ -100,7 +101,7 @@ public class OrderCreateTest {
     @DisplayName("Создание заказа с невалидным ингредиентом c авторизацией")
     public void orderCreateTestWithAuthorizedInvalid() {
         Order order = new Order(ingredients);
-        order.setIngredients(new String[]{"qwerty123"});
+        order.setIngredients(new String[]{invalidIngredient});
         ValidatableResponse response = userClient.create(user);
         accessToken = response.extract().path("accessToken").toString();
         email = response.extract().path("user.email").toString();
