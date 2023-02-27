@@ -46,7 +46,7 @@ public class UserCreateTest {
     public void createUserWithoutPassword() {
         user.setPassword("");
         ValidatableResponse response = userClient.create(user);
-        if (accessToken != null) {
+        if (response.extract().statusCode() == 200) {
             accessToken = response.extract().path("accessToken").toString();
         }
         response.assertThat().body("message", equalTo("Email, password and name are required fields"))
